@@ -1,8 +1,8 @@
 {
-  "author": "Chris Oakman <chris@oakmac.com> (http://chrisoakman.com/)",
-  "name": "oakmac-chessboard",
+  "author": "Yannik Schröder",
+  "name": "heatboard.js",
   "description": "JavaScript chessboard widget",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/oakmac/chessboardjs.git"
