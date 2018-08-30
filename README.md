@@ -1,9 +1,9 @@
 # heatboard.js
 
 heatboard.js is a fork of oakmacs [chessboard.js](https://github.com/oakmac/chessboardjs) with added heat map functionality.
-heatboard.js is a JavaScript chessboard component. It depends on [jQuery].
+heatboard.js is a JavaScript chessboard component. It depends on jQuery.
 
-Please see [chessboardjs.com] for basic usage.
+Please see [chessboardjs.com](chessboardjs.com) for basic usage.
 
 ## New functions in heatboard.js
 
