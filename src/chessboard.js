@@ -11,6 +11,7 @@
 	'use strict';
 
 	var $ = window['jQuery'];
+	require('jquery-color');
 
 	// ---------------------------------------------------------------------------
 	// Constants
@@ -1260,7 +1261,7 @@
 				background: 'white'
 			});
 			// $('.' + CSS.piece).css({
-			// 	opacity: 0
+			//   opacity: 0
 			// });
 		}
 
@@ -1754,67 +1755,83 @@
 		) {
 			// disable board
 			disableSquares();
-			let heatCol =
-				'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',';
-			for (let i = 0; i < 8; i++) {
-				for (let j = 0; j < 8; j++) {
-					let col = COLUMNS[j];
-					let row = 8 - i;
-					let id = 'heat-' + squareElsIds[col + row];
-					let alpha = Math.sqrt(map[i][j] / max).toFixed(2);
-					let value = map[i][j].toFixed(2);
-					let tile = $('#' + id);
-					tile.css({
-						background: heatCol + alpha + ')',
-						'box-shadow':
-							'3px 3px ' +
-							alpha * 20 +
-							'px rgba(0,0,0,' +
-							(alpha > 0.5 ? alpha / 2 : 0) +
-							')',
-						'z-index': Math.round(map[i][j]),
-						transition: 'box-shadow 1.5s' //, background " +
-						// (1.5 - alpha) +
-						// "s"
-					});
-					let heatVal = tile.children('.' + CSS.heatvalue);
-					heatVal.html(value + unit);
-					if (value < 0.001)
-						heatVal.css({
-							display: 'none'
-						});
-					else heatVal.css({ display: '' });
+
+			// reset heattiles
+			$('.' + CSS.heattile).css({
+				background: 'none'
+			});
+			$('.' + CSS.heattile).stop();
+
+			// force redraw
+			// $('#heat-' + squareElsIds['a1'])[0].offsetHeight;
+
+			if (max !== 0) {
+				for (let i = 0; i < 8; i++) {
+					for (let j = 0; j < 8; j++) {
+						let col = COLUMNS[j];
+						let row = 8 - i;
+						let alpha = Math.sqrt(map[i][j] / max).toFixed(2);
+						let value = map[i][j].toFixed(2);
+						let tile = $('#heat-' + squareElsIds[col + row]);
+						let animTime = (1.5 - Math.pow(alpha, 4)) * 1000;
+						tile.animate(
+							{
+								backgroundColor: $.Color(
+									color[0],
+									color[1],
+									color[2],
+									alpha
+								)
+							},
+							animTime
+						);
+						let heatVal = tile.children('.' + CSS.heatvalue);
+						heatVal.html(value + unit);
+						if (value < 0.001)
+							heatVal.css({
+								display: 'none'
+							});
+						else heatVal.css({ display: '' });
+					}
 				}
+			} else {
+				$('.' + CSS.heatvalue).css({
+					display: 'none'
+				});
 			}
 		};
 
 		widget.drawComparisonHeatmap = function(map, min, max) {
 			// disable board
 			disableSquares();
+
+			// reset heattiles
+			$('.' + CSS.heattile).css({
+				background: 'none'
+			});
+			$('.' + CSS.heattile).stop();
+
 			if (Math.abs(min) > max) max = Math.abs(min);
-			let heatCol = [];
-			heatCol[0] = 'rgba(0,215,0,';
-			heatCol[1] = 'rgba(255,0,0,';
 			for (let i = 0; i < 8; i++) {
 				for (let j = 0; j < 8; j++) {
+					let color = map[i][j] >= 0 ? [0, 215, 0] : [255, 0, 0];
 					let col = COLUMNS[j];
 					let row = 8 - i;
-					let id = 'heat-' + squareElsIds[col + row];
 					let alpha = Math.sqrt(Math.abs(map[i][j]) / max).toFixed(2);
 					let value = Math.abs(map[i][j]).toFixed(2);
-					let tile = $('#' + id);
-					tile.css({
-						background:
-							heatCol[map[i][j] >= 0 ? 0 : 1] + alpha + ')',
-						'box-shadow':
-							'3px 3px ' +
-							alpha * 20 +
-							'px rgba(0,0,0,' +
-							(alpha > 0.5 ? alpha / 2 : 0) +
-							')',
-						'z-index': Math.round(Math.abs(map[i][j])),
-						transition: 'box-shadow 2s'
-					});
+					let tile = $('#heat-' + squareElsIds[col + row]);
+					let animTime = (1.5 - Math.pow(alpha, 4)) * 1000;
+					tile.animate(
+						{
+							backgroundColor: $.Color(
+								color[0],
+								color[1],
+								color[2],
+								alpha
+							)
+						},
+						animTime
+					);
 					let heatVal = tile.children('.' + CSS.heatvalue);
 					heatVal.html((map[i][j] >= 0 ? '+' : '-') + value + '%');
 					if (value < 0.001)
